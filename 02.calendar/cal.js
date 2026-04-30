@@ -1,55 +1,39 @@
+#!/usr/bin/env node
+
 import minimist from "minimist";
 
-const argv = minimist(process.argv, {
-  default: { y: new Date().getFullYear(), m: new Date().getMonth() - 1 },
+const argv = minimist(process.argv.slice(2), {
+  default: { y: new Date().getFullYear(), m: new Date().getMonth() + 1 },
 });
+const { y: year, m: month } = argv;
 
-console.log(argv.m);
-const startDate = new Date(argv.y, argv.m, 1);
-const daysInMonth = new Date(argv.y, argv.m, 0).getDate();
-const firstDayOfWeek = new Date(argv.y, argv.m - 1).getDay();
+const daysInMonth = new Date(year, month, 0).getDate();
+const firstDayOfWeek = new Date(year, month - 1).getDay();
 
-let weekMatrix = [];
-let currentWeekRow = [];
-let dayIndex = 0;
+const generateCalendar = (daysInMonth, firstDayOfWeek) => {
+  const weekMatrix = [];
+  let currentWeekRow = Array(firstDayOfWeek).fill("  ");
 
-// console.log(Day.length); // 4月なら、3の表示。水曜日が「1」
-let generateCalendar = (endday) => {
-  for (let i = 1; i <= endday; i++) {
-    // 初回だけ、実行
-    if (i === 1) {
-      for (let j = 0; j < firstDayOfWeek; j++) {
-        currentWeekRow.push("  ");
-        dayIndex++;
-      }
-    }
+  for (let day = 1; day <= daysInMonth; day++) {
+    currentWeekRow.push(String(day).padStart(2));
 
-    if (String(i).length === 1) {
-      currentWeekRow.push(" " + String(i));
-    } else {
-      currentWeekRow.push(i);
-    }
-    dayIndex++;
-
-    if (dayIndex === 7 || i === endday) {
+    if (currentWeekRow.length === 7 || day === daysInMonth) {
       weekMatrix.push(currentWeekRow);
-      dayIndex = 0;
       currentWeekRow = [];
     }
   }
   return weekMatrix;
 };
 
-// --表示--
-let display = (startDate, daysInMonth, weekMatrix) => {
-  console.log(`     ${startDate.getMonth()}月 ${startDate.getFullYear()}`);
+const display = (year, month, daysInMonth, firstDayOfWeek) => {
+  console.log(`     ${month}月 ${year}`);
   console.log("日 月 火 水 木 金 土");
 
-  weekMatrix = generateCalendar(daysInMonth);
+  const weekMatrix = generateCalendar(daysInMonth, firstDayOfWeek);
 
-  for (let i = 0; i < weekMatrix.length; i++) {
-    console.log(weekMatrix[i].join(" "));
+  for (const week of weekMatrix) {
+    console.log(week.join(" "));
   }
 };
 
-display(startDate, daysInMonth);
+display(year, month, daysInMonth, firstDayOfWeek);
