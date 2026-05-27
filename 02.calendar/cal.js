@@ -3,7 +3,7 @@
 import minimist from "minimist";
 
 const argv = minimist(process.argv.slice(2), {
-  default: { y: new Date().getFullYear(), m: new Date().getMonth() - 1 },
+  default: { y: new Date().getFullYear(), m: new Date().getMonth() + 1 },
 });
 
 console.log(argv.m);
