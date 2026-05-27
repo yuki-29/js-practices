@@ -5,11 +5,10 @@ import minimist from "minimist";
 const argv = minimist(process.argv.slice(2), {
   default: { y: new Date().getFullYear(), m: new Date().getMonth() + 1 },
 });
+const { y: year, m: month } = argv;
 
-console.log(argv.m);
-const startDate = new Date(argv.y, argv.m, 1);
-const daysInMonth = new Date(argv.y, argv.m, 0).getDate();
-const firstDayOfWeek = new Date(argv.y, argv.m - 1).getDay();
+const daysInMonth = new Date(year, month, 0).getDate();
+const firstDayOfWeek = new Date(year, month - 1).getDay();
 
 let weekMatrix = [];
 let currentWeekRow = [];
