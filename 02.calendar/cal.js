@@ -2,8 +2,10 @@
 
 import minimist from "minimist";
 
+const now = new Date();
+
 const argv = minimist(process.argv.slice(2), {
-  default: { y: new Date().getFullYear(), m: new Date().getMonth() + 1 },
+  default: { y: now.getFullYear(), m: now.getMonth() + 1 },
 });
 const { y: year, m: month } = argv;
 
