@@ -7,35 +7,41 @@ const now = new Date();
 const argv = minimist(process.argv.slice(2), {
   default: { y: now.getFullYear(), m: now.getMonth() + 1 },
 });
+
 const { y: year, m: month } = argv;
+const firstDate = new Date(year, month - 1);
 
-const daysInMonth = new Date(year, month, 0).getDate();
-const firstDayOfWeek = new Date(year, month - 1).getDay();
-
-const generateCalendar = (daysInMonth, firstDayOfWeek) => {
+const generateCalendar = (firstDate) => {
   const weekMatrix = [];
-  let currentWeekRow = Array(firstDayOfWeek).fill("  ");
+  let currentWeekRow = Array(firstDate.getDay()).fill("  ");
 
-  for (let day = 1; day <= daysInMonth; day++) {
-    currentWeekRow.push(String(day).padStart(2));
+  const date = new Date(firstDate);
+  const month = date.getMonth();
 
-    if (currentWeekRow.length === 7 || day === daysInMonth) {
+  while (date.getMonth() === month) {
+    currentWeekRow.push(String(date.getDate()).padStart(2));
+
+    if (currentWeekRow.length === 7) {
       weekMatrix.push(currentWeekRow);
       currentWeekRow = [];
     }
+    date.setDate(date.getDate() + 1);
+  }
+  if (currentWeekRow.length > 0) {
+    weekMatrix.push(currentWeekRow);
   }
   return weekMatrix;
 };
 
-const display = (year, month, daysInMonth, firstDayOfWeek) => {
-  console.log(`     ${month}月 ${year}`);
+const display = (firstDate) => {
+  console.log(`     ${firstDate.getMonth() + 1}月 ${firstDate.getFullYear()}`);
   console.log("日 月 火 水 木 金 土");
 
-  const weekMatrix = generateCalendar(daysInMonth, firstDayOfWeek);
+  const weekMatrix = generateCalendar(firstDate);
 
   for (const week of weekMatrix) {
     console.log(week.join(" "));
   }
 };
 
-display(year, month, daysInMonth, firstDayOfWeek);
+display(firstDate);
