@@ -25,7 +25,7 @@ const generateCalendar = (firstDate) => {
 };
 
 const display = (firstDate) => {
-  console.log(`     ${firstDate.getMonth() + 1}月 ${firstDate.getFullYear()}`);
+  console.log(`      ${firstDate.getMonth() + 1}月 ${firstDate.getFullYear()}`);
   console.log("日 月 火 水 木 金 土");
 
   const weekMatrix = generateCalendar(firstDate);
