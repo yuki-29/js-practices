@@ -4,11 +4,10 @@ import minimist from "minimist";
 
 const now = new Date();
 
-const argv = minimist(process.argv.slice(2), {
+const { y: year, m: month } = minimist(process.argv.slice(2), {
   default: { y: now.getFullYear(), m: now.getMonth() + 1 },
 });
 
-const { y: year, m: month } = argv;
 const firstDate = new Date(year, month - 1);
 
 const generateCalendar = (firstDate) => {
