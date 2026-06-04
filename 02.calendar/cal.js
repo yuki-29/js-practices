@@ -2,14 +2,15 @@
 
 import minimist from "minimist";
 
-const generateCalendar = (firstDate) => {
+const generateCalendar = (year, month) => {
   const weekMatrix = [];
+  const firstDate = new Date(year, month - 1);
   let currentWeekRow = Array(firstDate.getDay()).fill("  ");
 
   const date = new Date(firstDate);
-  const month = date.getMonth();
+  const targetMonth = date.getMonth();
 
-  while (date.getMonth() === month) {
+  while (date.getMonth() === targetMonth) {
     currentWeekRow.push(String(date.getDate()).padStart(2));
 
     if (currentWeekRow.length === 7) {
@@ -24,11 +25,11 @@ const generateCalendar = (firstDate) => {
   return weekMatrix;
 };
 
-const display = (firstDate) => {
-  console.log(`      ${firstDate.getMonth() + 1}月 ${firstDate.getFullYear()}`);
+const display = (year, month) => {
+  console.log(`      ${month}月 ${year}`);
   console.log("日 月 火 水 木 金 土");
 
-  const weekMatrix = generateCalendar(firstDate);
+  const weekMatrix = generateCalendar(year, month);
 
   for (const week of weekMatrix) {
     console.log(week.join(" "));
@@ -41,6 +42,4 @@ const { y: year, m: month } = minimist(process.argv.slice(2), {
   default: { y: now.getFullYear(), m: now.getMonth() + 1 },
 });
 
-const firstDate = new Date(year, month - 1);
-
-display(firstDate);
+display(year, month);
