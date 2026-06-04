@@ -25,7 +25,7 @@ const generateCalendar = (year, month) => {
   return weekMatrix;
 };
 
-const display = (year, month) => {
+const displayCalendar = (year, month) => {
   console.log(`      ${month}月 ${year}`);
   console.log("日 月 火 水 木 金 土");
 
@@ -42,4 +42,4 @@ const { y: year, m: month } = minimist(process.argv.slice(2), {
   default: { y: now.getFullYear(), m: now.getMonth() + 1 },
 });
 
-display(year, month);
+displayCalendar(year, month);
