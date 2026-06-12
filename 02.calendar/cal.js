@@ -4,18 +4,21 @@ import minimist from "minimist";
 
 const generateCalendar = (year, month) => {
   const weekMatrix = [];
-  const date = new Date(year, month - 1);
-  const endDate = new Date(year, month, 0).getDate();
-  let currentWeekRow = Array(date.getDay()).fill("  ");
+  const startDate = new Date(year, month - 1);
+  const endDate = new Date(year, month, 0);
+  let currentWeekRow = Array(startDate.getDay()).fill("  ");
 
-  for (let i = 1; i <= endDate; i++) {
-    currentWeekRow.push(String(date.getDate()).padStart(2));
+  for (
+    let day = new Date(startDate);
+    day <= endDate;
+    day.setDate(day.getDate() + 1)
+  ) {
+    currentWeekRow.push(String(day.getDate()).padStart(2));
 
     if (currentWeekRow.length === 7) {
       weekMatrix.push(currentWeekRow);
       currentWeekRow = [];
     }
-    date.setDate(date.getDate() + 1);
   }
   if (currentWeekRow.length > 0) {
     weekMatrix.push(currentWeekRow);
