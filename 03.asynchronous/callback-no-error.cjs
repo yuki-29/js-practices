@@ -13,6 +13,17 @@ db.run("CREATE TABLE books (title TEXT)", () => {
   const stmt = db.prepare("INSERT INTO books VALUES (?)", function () {
     function insertOne(index) {
       if (index >= titles.length) {
+        stmt.finalize(() => {
+          db.each(
+            "SELECT rowid AS id, title FROM books",
+            (err, row) => {
+              console.log(row.id, row.title);
+            },
+            () => {
+              db.run("DROP TABLE books");
+            },
+          );
+        });
         return;
       }
       stmt.run(titles[index], function () {
@@ -23,4 +34,3 @@ db.run("CREATE TABLE books (title TEXT)", () => {
     insertOne(0);
   });
 });
-
