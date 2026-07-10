@@ -9,7 +9,7 @@ db.run(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL UNIQUE)",
   () => {
     db.run(sqlQuery, () => {
-      db.run(sqlQuery, function (insertError) {
+      db.run(sqlQuery, (insertError) => {
         if (insertError) {
           console.error(insertError.message);
         }
