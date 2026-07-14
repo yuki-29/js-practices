@@ -18,7 +18,9 @@ db.run(
           if (selectError) {
             console.error(selectError.message);
           }
-          db.run("DROP TABLE books");
+          db.run("DROP TABLE books", () => {
+            db.close();
+          });
         });
       });
     });
