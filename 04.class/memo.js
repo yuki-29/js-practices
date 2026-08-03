@@ -23,7 +23,7 @@ class Command {
     } else if (this.argv.r) {
       const memos = await db.all();
       const id = await read.choices(memos);
-      const memo = await db.dbGet("SELECT body FROM memos WHERE id = ?", [id]);
+      const memo = await db.find(id);
       console.log(memo.body);
     } else if (this.argv.d) {
       const memos = await db.all();
@@ -96,6 +96,13 @@ class Database {
   async all() {
     const rows = await this.dbAll("SELECT id, body FROM memos");
     return rows.map((row) => new Memo(row));
+  }
+
+  async find(id) {
+    const row = await this.dbGet("SELECT id, body FROM memos WHERE id = ?", [
+      id,
+    ]);
+    return new Memo(row);
   }
 }
 
