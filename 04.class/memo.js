@@ -28,7 +28,7 @@ class Command {
     } else if (this.argv.d) {
       const memos = await db.all();
       const id = await read.choices(memos);
-      await db.dbRun("DELETE FROM memos WHERE id = ?", [id]);
+      await db.destroy(id);
     } else {
       await read.readLine(db);
     }
@@ -103,6 +103,10 @@ class Database {
       id,
     ]);
     return new Memo(row);
+  }
+
+  async destroy(id) {
+    await this.dbRun("DELETE FROM memos WHERE id = ?", [id]);
   }
 }
 
