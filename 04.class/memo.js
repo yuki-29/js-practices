@@ -30,7 +30,8 @@ class Command {
       const id = await read.choices(memos);
       await db.destroy(id);
     } else {
-      await read.readLine(db);
+      const lines = await read.readLine();
+      await db.add(lines.join("\n"));
     }
   }
 }
@@ -108,10 +109,14 @@ class Database {
   async destroy(id) {
     await this.dbRun("DELETE FROM memos WHERE id = ?", [id]);
   }
+
+  async add(body) {
+    await this.dbRun("INSERT INTO memos(body) VALUES (?)", [body]);
+  }
 }
 
 class UserInterface {
-  readLine(db) {
+  readLine() {
     return new Promise((resolve) => {
       const lines = [];
 
@@ -124,11 +129,8 @@ class UserInterface {
         lines.push(line);
       });
 
-      rl.on("close", async () => {
-        await db.dbRun("INSERT INTO memos(body) VALUES (?)", [
-          lines.join("\n"),
-        ]);
-        resolve();
+      rl.on("close", () => {
+        resolve(lines);
       });
     });
   }
