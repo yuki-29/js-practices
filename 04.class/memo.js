@@ -16,23 +16,17 @@ class Command {
     const read = new UserInterface();
 
     if (this.argv.l) {
-      const memos = (await db.dbAll("SELECT id, body FROM memos")).map(
-        (row) => new Memo(row),
-      );
+      const memos = await db.all();
       memos.forEach((memo) => {
         console.log(memo.title);
       });
     } else if (this.argv.r) {
-      const memos = (await db.dbAll("SELECT id, body FROM memos")).map(
-        (row) => new Memo(row),
-      );
+      const memos = await db.all();
       const id = await read.choices(memos);
       const memo = await db.dbGet("SELECT body FROM memos WHERE id = ?", [id]);
       console.log(memo.body);
     } else if (this.argv.d) {
-      const memos = (await db.dbAll("SELECT id, body FROM memos")).map(
-        (row) => new Memo(row),
-      );
+      const memos = await db.all();
       const id = await read.choices(memos);
       await db.dbRun("DELETE FROM memos WHERE id = ?", [id]);
     } else {
@@ -97,6 +91,11 @@ class Database {
         }
       });
     });
+  }
+
+  async all() {
+    const rows = await this.dbAll("SELECT id, body FROM memos");
+    return rows.map((row) => new Memo(row));
   }
 }
 
