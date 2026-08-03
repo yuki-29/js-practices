@@ -16,22 +16,39 @@ class Command {
     const read = new UserInterface();
 
     if (this.argv.l) {
-      const memos = await db.dbAll("SELECT id, body FROM memos");
+      const memos = (await db.dbAll("SELECT id, body FROM memos")).map(
+        (row) => new Memo(row),
+      );
       memos.forEach((memo) => {
-        console.log(memo.body.split("\n")[0]);
+        console.log(memo.title);
       });
     } else if (this.argv.r) {
-      const memos = await db.dbAll("SELECT id, body FROM memos");
+      const memos = (await db.dbAll("SELECT id, body FROM memos")).map(
+        (row) => new Memo(row),
+      );
       const id = await read.choices(memos);
       const memo = await db.dbGet("SELECT body FROM memos WHERE id = ?", [id]);
       console.log(memo.body);
     } else if (this.argv.d) {
-      const memos = await db.dbAll("SELECT id, body FROM memos");
+      const memos = (await db.dbAll("SELECT id, body FROM memos")).map(
+        (row) => new Memo(row),
+      );
       const id = await read.choices(memos);
       await db.dbRun("DELETE FROM memos WHERE id = ?", [id]);
     } else {
       await read.readLine(db);
     }
+  }
+}
+
+class Memo {
+  constructor(memo) {
+    this.id = memo.id;
+    this.body = memo.body;
+  }
+
+  get title() {
+    return this.body.split("\n")[0];
   }
 }
 
@@ -110,7 +127,7 @@ class UserInterface {
     const { Select } = Enquirer;
     const choices = memos.map((memo) => {
       return {
-        message: memo.body.split("\n")[0],
+        message: memo.title,
         name: memo.id,
       };
     });
