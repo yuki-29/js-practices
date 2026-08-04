@@ -9,7 +9,7 @@ db.run(
   () => {
     db.run("INSERT INTO books(title) VALUES ('タイトル')", function () {
       console.log(this.lastID);
-      db.get("SELECT id, title FROM books", (err, row) => {
+      db.get("SELECT id, title FROM books", (_error, row) => {
         console.log(row.id, row.title);
         db.run("DROP TABLE books", () => {
           db.close();
