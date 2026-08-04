@@ -2,11 +2,13 @@
 
 import { dbRun, dbGet, dbClose } from "./database.js";
 
+const insertQuery = "INSERT INTO books(title) VALUES ('タイトル')";
+
 dbRun(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL UNIQUE)",
 )
-  .then(() => dbRun("INSERT INTO books(title) VALUES ('タイトル')"))
-  .then(() => dbRun("INSERT INTO books(title) VALUES ('タイトル')"))
+  .then(() => dbRun(insertQuery))
+  .then(() => dbRun(insertQuery))
   .catch((insertError) => console.error(insertError.message))
   .then(() => dbGet("SELECT id, author FROM books"))
   .catch((selectError) => console.error(selectError.message))
