@@ -53,12 +53,12 @@ class Database {
   }
 
   async setup() {
-    await this.dbRun(
+    await this.#run(
       "CREATE TABLE IF NOT EXISTS memos (id INTEGER PRIMARY KEY AUTOINCREMENT, body TEXT)",
     );
   }
 
-  dbRun(query, params) {
+  #run(query, params) {
     return new Promise((resolve, reject) => {
       this.db.run(query, params, function (err) {
         if (err) {
@@ -70,7 +70,7 @@ class Database {
     });
   }
 
-  dbGet(query, params) {
+  #get(query, params) {
     return new Promise((resolve, reject) => {
       this.db.get(query, params, (err, row) => {
         if (err) {
@@ -82,7 +82,7 @@ class Database {
     });
   }
 
-  dbAll(query) {
+  #all(query) {
     return new Promise((resolve, reject) => {
       this.db.all(query, (err, rows) => {
         if (err) {
@@ -95,23 +95,23 @@ class Database {
   }
 
   async all() {
-    const rows = await this.dbAll("SELECT id, body FROM memos");
+    const rows = await this.#all("SELECT id, body FROM memos");
     return rows.map((row) => new Memo(row));
   }
 
   async find(id) {
-    const row = await this.dbGet("SELECT id, body FROM memos WHERE id = ?", [
+    const row = await this.#get("SELECT id, body FROM memos WHERE id = ?", [
       id,
     ]);
     return new Memo(row);
   }
 
   async destroy(id) {
-    await this.dbRun("DELETE FROM memos WHERE id = ?", [id]);
+    await this.#run("DELETE FROM memos WHERE id = ?", [id]);
   }
 
   async add(body) {
-    await this.dbRun("INSERT INTO memos(body) VALUES (?)", [body]);
+    await this.#run("INSERT INTO memos(body) VALUES (?)", [body]);
   }
 }
 
