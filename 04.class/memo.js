@@ -17,22 +17,33 @@ class Command {
 
     if (this.argv.l) {
       const memos = await db.all();
+      if (this.notifyIfEmpty(memos)) return;
       memos.forEach((memo) => {
         console.log(memo.title);
       });
     } else if (this.argv.r) {
       const memos = await db.all();
+      if (this.notifyIfEmpty(memos)) return;
       const id = await read.choices(memos, "Choose a note you want to see:");
       const memo = await db.find(id);
       console.log(memo.body);
     } else if (this.argv.d) {
       const memos = await db.all();
+      if (this.notifyIfEmpty(memos)) return;
       const id = await read.choices(memos, "Choose a memo you want to delete:");
       await db.destroy(id);
     } else {
       const lines = await read.readLine();
       await db.add(lines.join("\n"));
     }
+  }
+
+  notifyIfEmpty(memos) {
+    if (memos.length === 0) {
+      console.log("メモがありません");
+      return true;
+    }
+    return false;
   }
 }
 
