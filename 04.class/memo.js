@@ -58,6 +58,26 @@ class Database {
     );
   }
 
+  async add(body) {
+    await this.#run("INSERT INTO memos(body) VALUES (?)", [body]);
+  }
+
+  async all() {
+    const rows = await this.#all("SELECT id, body FROM memos");
+    return rows.map((row) => new Memo(row));
+  }
+
+  async find(id) {
+    const row = await this.#get("SELECT id, body FROM memos WHERE id = ?", [
+      id,
+    ]);
+    return new Memo(row);
+  }
+
+  async destroy(id) {
+    await this.#run("DELETE FROM memos WHERE id = ?", [id]);
+  }
+
   #run(query, params) {
     return new Promise((resolve, reject) => {
       this.db.run(query, params, function (err) {
@@ -92,26 +112,6 @@ class Database {
         }
       });
     });
-  }
-
-  async all() {
-    const rows = await this.#all("SELECT id, body FROM memos");
-    return rows.map((row) => new Memo(row));
-  }
-
-  async find(id) {
-    const row = await this.#get("SELECT id, body FROM memos WHERE id = ?", [
-      id,
-    ]);
-    return new Memo(row);
-  }
-
-  async destroy(id) {
-    await this.#run("DELETE FROM memos WHERE id = ?", [id]);
-  }
-
-  async add(body) {
-    await this.#run("INSERT INTO memos(body) VALUES (?)", [body]);
   }
 }
 
