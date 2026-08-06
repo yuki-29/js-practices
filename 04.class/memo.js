@@ -26,7 +26,9 @@ class Command {
       const memo = await db.dbGet("SELECT body FROM memos WHERE id = ?", [id]);
       console.log(memo.body);
     } else if (this.argv.d) {
-      // 削除 選んだメモが削除される。
+      const memos = await db.dbAll("SELECT id, body FROM memos");
+      const id = await read.choices(memos);
+      await db.dbRun("DELETE FROM memos WHERE id = ?", [id]);
     } else {
       await read.readLine(db);
     }
