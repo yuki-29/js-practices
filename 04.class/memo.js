@@ -3,6 +3,7 @@
 import sqlite3 from "sqlite3";
 import readline from "readline";
 import minimist from "minimist";
+import Enquirer from "enquirer";
 
 class Command {
   constructor() {
@@ -20,7 +21,10 @@ class Command {
         console.log(memo.body.split("\n")[0]);
       });
     } else if (this.argv.r) {
-      // 参照 選んだメモの全文表示
+      const memos = await db.dbAll("SELECT id, body FROM memos");
+      const id = await read.choices(memos);
+      const memo = await db.dbGet("SELECT body FROM memos WHERE id = ?", [id]);
+      console.log(memo.body);
     } else if (this.argv.d) {
       // 削除 選んだメモが削除される。
     } else {
@@ -98,6 +102,23 @@ class UserInterface {
         resolve();
       });
     });
+  }
+
+  async choices(memos) {
+    const { Select } = Enquirer;
+    const choices = memos.map((memo) => {
+      return {
+        message: memo.body.split("\n")[0],
+        name: memo.id,
+      };
+    });
+
+    const prompt = new Select({
+      name: "memo",
+      message: "Choose a note you want to see:",
+      choices: choices,
+    });
+    return await prompt.run();
   }
 }
 
