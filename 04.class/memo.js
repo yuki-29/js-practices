@@ -146,8 +146,8 @@ class UserInterface {
 
     const prompt = new Select({
       name: "memo",
-      message: message,
-      choices: choices,
+      message,
+      choices,
     });
     return await prompt.run();
   }
