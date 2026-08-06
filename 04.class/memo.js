@@ -22,12 +22,12 @@ class Command {
       });
     } else if (this.argv.r) {
       const memos = await db.all();
-      const id = await read.choices(memos);
+      const id = await read.choices(memos, "Choose a note you want to see:");
       const memo = await db.find(id);
       console.log(memo.body);
     } else if (this.argv.d) {
       const memos = await db.all();
-      const id = await read.choices(memos);
+      const id = await read.choices(memos, "Choose a memo you want to delete:");
       await db.destroy(id);
     } else {
       const lines = await read.readLine();
@@ -135,7 +135,7 @@ class UserInterface {
     });
   }
 
-  async choices(memos) {
+  async choices(memos, message) {
     const { Select } = Enquirer;
     const choices = memos.map((memo) => {
       return {
@@ -146,7 +146,7 @@ class UserInterface {
 
     const prompt = new Select({
       name: "memo",
-      message: "Choose a note you want to see:",
+      message: message,
       choices: choices,
     });
     return await prompt.run();
