@@ -22,9 +22,7 @@ class Command {
           read.notifyEmpty();
           return;
         }
-        memos.forEach((memo) => {
-          console.log(memo.title);
-        });
+        read.showList(memos);
       } else if (this.argv.r) {
         const memos = await db.all();
         if (memos.length === 0) {
@@ -33,7 +31,7 @@ class Command {
         }
         const id = await read.choices(memos, "Choose a note you want to see:");
         const targetMemo = memos.find((memo) => memo.id === id);
-        console.log(targetMemo.body);
+        read.showBody(targetMemo);
       } else if (this.argv.d) {
         const memos = await db.all();
         if (memos.length === 0) {
@@ -130,6 +128,16 @@ class Database {
 class UserInterface {
   notifyEmpty() {
     console.log("メモがありません");
+  }
+
+  showList(memos) {
+    memos.forEach((memo) => {
+      console.log(memo.title);
+    });
+  }
+
+  showBody(memo) {
+    console.log(memo.body);
   }
 
   readLine() {
