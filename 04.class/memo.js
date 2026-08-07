@@ -18,19 +18,28 @@ class Command {
     try {
       if (this.argv.l) {
         const memos = await db.all();
-        if (this.notifyIfEmpty(memos)) return;
+        if (memos.length === 0) {
+          read.notifyEmpty();
+          return;
+        }
         memos.forEach((memo) => {
           console.log(memo.title);
         });
       } else if (this.argv.r) {
         const memos = await db.all();
-        if (this.notifyIfEmpty(memos)) return;
+        if (memos.length === 0) {
+          read.notifyEmpty();
+          return;
+        }
         const id = await read.choices(memos, "Choose a note you want to see:");
         const targetMemo = memos.find((memo) => memo.id === id);
         console.log(targetMemo.body);
       } else if (this.argv.d) {
         const memos = await db.all();
-        if (this.notifyIfEmpty(memos)) return;
+        if (memos.length === 0) {
+          read.notifyEmpty();
+          return;
+        }
         const id = await read.choices(
           memos,
           "Choose a memo you want to delete:",
@@ -43,14 +52,6 @@ class Command {
     } finally {
       await db.close();
     }
-  }
-
-  notifyIfEmpty(memos) {
-    if (memos.length === 0) {
-      console.log("メモがありません");
-      return true;
-    }
-    return false;
   }
 }
 
@@ -127,6 +128,10 @@ class Database {
 }
 
 class UserInterface {
+  notifyEmpty() {
+    console.log("メモがありません");
+  }
+
   readLine() {
     return new Promise((resolve) => {
       const lines = [];
