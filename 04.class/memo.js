@@ -15,26 +15,33 @@ class Command {
     await db.setup();
     const read = new UserInterface();
 
-    if (this.argv.l) {
-      const memos = await db.all();
-      if (this.notifyIfEmpty(memos)) return;
-      memos.forEach((memo) => {
-        console.log(memo.title);
-      });
-    } else if (this.argv.r) {
-      const memos = await db.all();
-      if (this.notifyIfEmpty(memos)) return;
-      const id = await read.choices(memos, "Choose a note you want to see:");
-      const targetMemo = memos.find((memo) => memo.id === id);
-      console.log(targetMemo.body);
-    } else if (this.argv.d) {
-      const memos = await db.all();
-      if (this.notifyIfEmpty(memos)) return;
-      const id = await read.choices(memos, "Choose a memo you want to delete:");
-      await db.destroy(id);
-    } else {
-      const lines = await read.readLine();
-      await db.add(lines.join("\n"));
+    try {
+      if (this.argv.l) {
+        const memos = await db.all();
+        if (this.notifyIfEmpty(memos)) return;
+        memos.forEach((memo) => {
+          console.log(memo.title);
+        });
+      } else if (this.argv.r) {
+        const memos = await db.all();
+        if (this.notifyIfEmpty(memos)) return;
+        const id = await read.choices(memos, "Choose a note you want to see:");
+        const targetMemo = memos.find((memo) => memo.id === id);
+        console.log(targetMemo.body);
+      } else if (this.argv.d) {
+        const memos = await db.all();
+        if (this.notifyIfEmpty(memos)) return;
+        const id = await read.choices(
+          memos,
+          "Choose a memo you want to delete:",
+        );
+        await db.destroy(id);
+      } else {
+        const lines = await read.readLine();
+        await db.add(lines.join("\n"));
+      }
+    } finally {
+      await db.close();
     }
   }
 
@@ -80,6 +87,18 @@ class Database {
 
   async destroy(id) {
     await this.#run("DELETE FROM memos WHERE id = ?", [id]);
+  }
+
+  close() {
+    return new Promise((resolve, reject) => {
+      this.db.close((err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
   }
 
   #run(query, params) {
