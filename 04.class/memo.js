@@ -48,9 +48,9 @@ class Command {
 }
 
 class Memo {
-  constructor(memo) {
-    this.id = memo.id;
-    this.body = memo.body;
+  constructor(row) {
+    this.id = row.id;
+    this.body = row.body;
   }
 
   get title() {
