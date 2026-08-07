@@ -25,8 +25,8 @@ class Command {
       const memos = await db.all();
       if (this.notifyIfEmpty(memos)) return;
       const id = await read.choices(memos, "Choose a note you want to see:");
-      const memo = await db.find(id);
-      console.log(memo.body);
+      const targetMemo = memos.find((memo) => memo.id === id);
+      console.log(targetMemo.body);
     } else if (this.argv.d) {
       const memos = await db.all();
       if (this.notifyIfEmpty(memos)) return;
@@ -78,13 +78,6 @@ class Database {
     return rows.map((row) => new Memo(row));
   }
 
-  async find(id) {
-    const row = await this.#get("SELECT id, body FROM memos WHERE id = ?", [
-      id,
-    ]);
-    return new Memo(row);
-  }
-
   async destroy(id) {
     await this.#run("DELETE FROM memos WHERE id = ?", [id]);
   }
@@ -96,18 +89,6 @@ class Database {
           reject(err);
         } else {
           resolve(this);
-        }
-      });
-    });
-  }
-
-  #get(query, params) {
-    return new Promise((resolve, reject) => {
-      this.db.get(query, params, (err, row) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(row);
         }
       });
     });
