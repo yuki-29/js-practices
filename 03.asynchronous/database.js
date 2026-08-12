@@ -1,8 +1,8 @@
 export function dbRun(db, query) {
   return new Promise((resolve, reject) => {
-    db.run(query, function (err) {
-      if (err) {
-        reject(err);
+    db.run(query, function (error) {
+      if (error) {
+        reject(error);
       } else {
         resolve(this);
       }
@@ -12,9 +12,9 @@ export function dbRun(db, query) {
 
 export function dbGet(db, query) {
   return new Promise((resolve, reject) => {
-    db.get(query, (err, row) => {
-      if (err) {
-        reject(err);
+    db.get(query, (error, row) => {
+      if (error) {
+        reject(error);
       } else {
         resolve(row);
       }
@@ -24,9 +24,9 @@ export function dbGet(db, query) {
 
 export function dbClose(db) {
   return new Promise((resolve, reject) => {
-    db.close((err) => {
-      if (err) {
-        reject(err);
+    db.close((error) => {
+      if (error) {
+        reject(error);
       } else {
         resolve();
       }
