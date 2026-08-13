@@ -15,7 +15,10 @@ await dbRun(db, insertQuery);
 try {
   await dbRun(db, insertQuery);
 } catch (insertError) {
-  if (insertError.code === "SQLITE_CONSTRAINT") {
+  if (
+    insertError instanceof Error &&
+    insertError.code === "SQLITE_CONSTRAINT"
+  ) {
     console.error(insertError.message);
   } else {
     throw insertError;
@@ -25,7 +28,7 @@ try {
 try {
   await dbGet(db, "SELECT id, author FROM books");
 } catch (selectError) {
-  if (selectError.code === "SQLITE_ERROR") {
+  if (selectError instanceof Error && selectError.code === "SQLITE_ERROR") {
     console.error(selectError.message);
   } else {
     throw selectError;
