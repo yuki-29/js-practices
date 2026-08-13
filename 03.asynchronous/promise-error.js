@@ -12,8 +12,12 @@ dbRun(
 )
   .then(() => dbRun(db, insertQuery))
   .then(() => dbRun(db, insertQuery))
-  .catch((insertError) => console.error(insertError.message))
+  .catch((insertError) => {
+    console.error(insertError.message);
+  })
   .then(() => dbGet(db, "SELECT id, author FROM books"))
-  .catch((selectError) => console.error(selectError.message))
+  .catch((selectError) => {
+    console.error(selectError.message);
+  })
   .then(() => dbRun(db, "DROP TABLE books"))
   .then(() => dbClose(db));
