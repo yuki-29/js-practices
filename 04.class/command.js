@@ -13,6 +13,12 @@ export class Command {
     const read = new UserInterface();
 
     try {
+      if (!this.argv.l && !this.argv.r && !this.argv.d) {
+        const lines = await read.readLine();
+        await db.add(lines.join("\n"));
+        return;
+      }
+
       if (this.argv.l) {
         const memos = await db.all();
         if (memos.length === 0) {
@@ -40,9 +46,6 @@ export class Command {
           "Choose a memo you want to delete:",
         );
         await db.destroy(id);
-      } else {
-        const lines = await read.readLine();
-        await db.add(lines.join("\n"));
       }
     } finally {
       await db.close();
