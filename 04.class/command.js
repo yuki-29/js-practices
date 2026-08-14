@@ -19,28 +19,19 @@ export class Command {
         return;
       }
 
+      const memos = await db.all();
+      if (memos.length === 0) {
+        read.notifyEmpty();
+        return;
+      }
+
       if (this.argv.l) {
-        const memos = await db.all();
-        if (memos.length === 0) {
-          read.notifyEmpty();
-          return;
-        }
         read.showList(memos);
       } else if (this.argv.r) {
-        const memos = await db.all();
-        if (memos.length === 0) {
-          read.notifyEmpty();
-          return;
-        }
         const id = await read.choices(memos, "Choose a note you want to see:");
         const targetMemo = memos.find((memo) => memo.id === id);
         read.showBody(targetMemo);
       } else if (this.argv.d) {
-        const memos = await db.all();
-        if (memos.length === 0) {
-          read.notifyEmpty();
-          return;
-        }
         const id = await read.choices(
           memos,
           "Choose a memo you want to delete:",
