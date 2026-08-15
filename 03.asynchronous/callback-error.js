@@ -3,7 +3,6 @@
 import sqlite3 from "sqlite3";
 
 const db = new sqlite3.Database(":memory:");
-
 const insertQuery = "INSERT INTO books(title) VALUES ('タイトル')";
 
 db.run(
@@ -14,7 +13,6 @@ db.run(
         if (insertError) {
           console.error(insertError.message);
         }
-
         db.get("SELECT id, author FROM books", (selectError) => {
           if (selectError) {
             console.error(selectError.message);
