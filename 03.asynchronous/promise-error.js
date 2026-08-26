@@ -11,15 +11,13 @@ dbRun(
   "CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL UNIQUE)",
 )
   .then(() => dbRun(db, insertQuery))
-  .then(() =>
-    dbRun(db, insertQuery).catch((insertError) => {
-      console.error(insertError.message);
-    }),
-  )
-  .then(() =>
-    dbGet(db, "SELECT id, author FROM books").catch((selectError) => {
-      console.error(selectError.message);
-    }),
-  )
-  .then(() => dbRun(db, "DROP TABLE books"))
+  .then(() => dbRun(db, insertQuery))
+  .catch((insertError) => {
+    console.error(insertError.message);
+    return dbGet(db, "SELECT id, author FROM books");
+  })
+  .catch((selectError) => {
+    console.error(selectError.message);
+    return dbRun(db, "DROP TABLE books");
+  })
   .then(() => dbClose(db));
